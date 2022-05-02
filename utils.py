@@ -3,14 +3,18 @@ from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 import torch
+import ssl
 
-train_data = datasets.FashionMNIST(
+ssl._create_default_https_context = ssl._create_unverified_context
+
+
+train_data = datasets.CIFAR10(
     root = 'data',
     train = True,
     transform = ToTensor(),
-    download = True,
+    download = False, ## If you do not have the data set stored locally at '/data' set to True
 )
-test_data = datasets.FashionMNIST(
+test_data = datasets.CIFAR10(
     root = 'data',
     train = False,
     transform = ToTensor()

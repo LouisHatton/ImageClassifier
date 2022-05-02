@@ -1,8 +1,13 @@
+from operator import itemgetter
 from torch.autograd import Variable
 from torch import optim
+import torch
+import torch
+from torch.utils.tensorboard import SummaryWriter
 import torch.nn as nn
 
-def train(num_epochs, cnn, loaders, batch_size, update_every_x_batches):
+def train(num_epochs, cnn, loaders, test_loaders, batch_size, update_every_x_batches, with_TensorBoard=False):
+    
     optimizer = optim.Adam(cnn.parameters(), lr = 0.01)   
     loss_func = nn.CrossEntropyLoss()
 
@@ -14,17 +19,30 @@ def train(num_epochs, cnn, loaders, batch_size, update_every_x_batches):
     print("Total number of Batches per Epoch: ", total_step)
     print("Total number of Images per Batch: ", batch_size)
     print("\n")
-        
+
+    if with_TensorBoard: writer = SummaryWriter()
+
+    iteration = 0
     for epoch in range(num_epochs):
-        for i, (images, labels) in enumerate(loaders):
+        correct = 0
+        total = 0
+        data = enumerate(loaders)
+        for i, (images, labels) in data:
             b_img = Variable(images)   # batch images
             b_lbs = Variable(labels)   # batch labels
 
             # Forward pass though network
             output = cnn(b_img)[0]
 
+            _, predicted = output.max(1)
+            total += labels.size(0)
+            correct += predicted.eq(labels).sum().item()
+            
+
             # Compute loss
             loss = loss_func(output, b_lbs)
+            if with_TensorBoard: writer.add_scalar("Loss/train", loss, iteration)
+            iteration += 1
             
             # clear gradients
             optimizer.zero_grad()
@@ -39,8 +57,9 @@ def train(num_epochs, cnn, loaders, batch_size, update_every_x_batches):
                 print ('Epoch [{}/{}], \t Batch [{}/{}], \t Loss: {:.4f}' 
                        .format(epoch + 1, num_epochs, i + 1, total_step, loss.item()))
                 pass
-        
-        pass
+
+        accuracy = 100 * (correct / total)
+        if with_TensorBoard: writer.add_scalar("Accuracy/train", accuracy, epoch + 1)
+        print(f"\nEpoch {epoch+1}, Train Accuracy: {accuracy:0.2f}%\n ")
     
-    
-    pass
+    if with_TensorBoard: writer.flush()

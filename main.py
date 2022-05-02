@@ -1,6 +1,7 @@
 import torch
 import time
 import random
+from plotter import *
 from utils import *
 from models import *
 from train import *
@@ -9,8 +10,8 @@ from test import *
 # # # --- Configuration --- # # #
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 BATCH_SIZE = 100 
-UPDATE_EVERY_X_BATCHES = 200
-MODEL_NAME = "SingleNetworkTesting"
+UPDATE_EVERY_X_BATCHES = 100
+MODEL_NAME = "CIFAR10_TEST"
 
 
 def saveModel(model, path):
@@ -21,14 +22,22 @@ def loadModel(model, path):
     model.load_state_dict(torch.load(path))
     print("Model loaded from: ", path.split("./trained_models/")[1])
 
-def train_model(model, train_loader, test_loader, num_epochs):
+def train_model(model, train_loader, test_loader, num_epochs, with_TensorBoard):
     tic = time.perf_counter()
     
     # Train the model
-    train(num_epochs, model, train_loader, BATCH_SIZE, UPDATE_EVERY_X_BATCHES)
+    train(
+        num_epochs=num_epochs,
+        cnn=model,
+        loaders=train_loader,
+        test_loaders=test_loader,
+        batch_size=BATCH_SIZE, 
+        update_every_x_batches=UPDATE_EVERY_X_BATCHES,
+        with_TensorBoard=with_TensorBoard)
 
     toc = time.perf_counter()
     print(f"\n⌛ Model finished training in {toc - tic:0.2f} seconds")
+
 
     # Test the model
     print("\n🎯 Testing Accuracy... \n")
@@ -67,14 +76,19 @@ if (__name__ == "__main__"):
     # Get the model
     model = SingleNetwork()
     
+    # Uncomment out the following line to train the model
+
     train_model(
             model=model,
             train_loader=train_loader, 
             test_loader=test_loader,
-            num_epochs=3
+            num_epochs=10,
+            with_TensorBoard=False
     )
 
-    # trained_model_path = "./trained_models/SingleNetworkTesting_279_8920.pth"
+    # Uncomment out the following line to test the model
+
+    # trained_model_path = "./trained_models/CIFAR10_TEST_759_5090.pth"
     # test_trained_model(
     #                 model=model, 
     #                 test_loader=test_loader, 

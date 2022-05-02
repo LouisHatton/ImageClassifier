@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 def display_multiple_img(images, rows = 1, cols=1):
     figure, ax = plt.subplots(nrows=rows,ncols=cols )
     for ind,title in enumerate(images):
-        ax.ravel()[ind].imshow(images[title][0])
+        img = images[title]
+        ax.ravel()[ind].imshow(np.transpose(img, (1, 2, 0)).squeeze())
         ax.ravel()[ind].set_title(title)
         ax.ravel()[ind].set_axis_off()
     plt.tight_layout()

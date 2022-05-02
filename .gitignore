@@ -1,5 +1,7 @@
 # Pytorch Data Store
 data/
+# TensorBoard Run Store
+runs/
 
 
 ## AUTO PYTHON GITIGNORE ## 

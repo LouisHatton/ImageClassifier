@@ -24,15 +24,15 @@ def test(cnn, loaders, batch_size):
     return meanAccuracy
 
 def predict(cnn, loaders):
-    classes = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+    classes = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
     sample = next(iter(loaders))
     imgs, lbls = sample
     actual_class = lbls[:10].numpy()
     test_output, last_layer = cnn(imgs[:10])
     pred_y = torch.max(test_output, 1)[1].data.numpy().squeeze()
-    print(f'Prediction Class: \t {pred_y}')
-    print(f'Actual Class: \t \t {actual_class}')
+    # print(f'Prediction Class: \t {pred_y}')
+    # print(f'Actual Class: \t \t {actual_class}')
     handle_predictions(imgs[:10], pred_y, actual_class, classes)
 
 

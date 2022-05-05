@@ -12,11 +12,11 @@ train_data = datasets.CIFAR10(
     root = 'data',
     train = True,
     transform = ToTensor(),
-    download = False, ## If you do not have the data set stored locally at '/data' set to True
+    download = True, ## If you do not have the data set stored locally at '/data' set to True
 )
 test_data = datasets.CIFAR10(
     root = 'data',
-    train = False,
+    train = True,
     transform = ToTensor()
 )
 

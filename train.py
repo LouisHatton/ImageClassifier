@@ -2,11 +2,10 @@ from operator import itemgetter
 from torch.autograd import Variable
 from torch import optim
 import torch
-import torch
 from torch.utils.tensorboard import SummaryWriter
 import torch.nn as nn
 
-def train(num_epochs, cnn, loaders, test_loaders, batch_size, update_every_x_batches, with_TensorBoard=False):
+def train(num_epochs, cnn, loaders, batch_size, update_every_x_batches, with_TensorBoard=False):
     
     optimizer = optim.Adam(cnn.parameters(), lr = 0.01)   
     loss_func = nn.CrossEntropyLoss()

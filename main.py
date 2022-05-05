@@ -30,7 +30,6 @@ def train_model(model, train_loader, test_loader, num_epochs, with_TensorBoard):
         num_epochs=num_epochs,
         cnn=model,
         loaders=train_loader,
-        test_loaders=test_loader,
         batch_size=BATCH_SIZE, 
         update_every_x_batches=UPDATE_EVERY_X_BATCHES,
         with_TensorBoard=with_TensorBoard)

@@ -1,10 +1,7 @@
 import torch
 import time
 import random
-from networks.FasterNet import FasterNet
-from networks.LouisNetwork import Network
-from networks.NewNet import NewNet
-from networks.OtherNet import OtherNet
+from networks.ThreeLayerConv import ThreeLayerConv
 from plotter import *
 from utils import *
 from models import *
@@ -59,15 +56,15 @@ def train_model(model, train_loader, valid_loader, test_loader, num_epochs, with
     predict(model, test_loader)
 
 def test_trained_model(model, test_loader, path, run_accuracy):
-    print("\n🔃 Loading the model... \n")
+    print("\nLoading the model... \n")
     loadModel(model, path)
 
     if run_accuracy:
-        print("\n🎯 Testing Accuracy... \n")
+        print("\nTesting Accuracy... \n")
         mean_accuracy = test(model, test_loader, BATCH_SIZE)
 
     # Predict the model
-    print("\n🔮 Running Visual Predictions... \n")
+    print("\nRunning Visual Predictions... \n")
     predict(model, test_loader)
 
 
@@ -78,7 +75,7 @@ if (__name__ == "__main__"):
     train_loader, test_loader, validation_loader = getLoaders(batch_size=BATCH_SIZE)
 
     # Get the model
-    model = NewNet()
+    model = ThreeLayerConv()
     
     # Uncomment out the following line to train the model
 

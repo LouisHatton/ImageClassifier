@@ -6,7 +6,7 @@ import torch
 from torch.utils.tensorboard import SummaryWriter
 import torch.nn as nn
 
-def train(num_epochs, cnn, loaders, test_loaders, batch_size, update_every_x_batches, with_TensorBoard=False):
+def train(num_epochs, cnn, loaders, valid_loader, batch_size, update_every_x_batches, with_TensorBoard=False):
     
     optimizer = optim.Adam(cnn.parameters(), lr = 0.01)   
     loss_func = nn.CrossEntropyLoss()
@@ -21,12 +21,20 @@ def train(num_epochs, cnn, loaders, test_loaders, batch_size, update_every_x_bat
     print("\n")
 
     if with_TensorBoard: writer = SummaryWriter()
+    if with_TensorBoard: writer.add_scalar("Accuracy/train", 0, 0)
+    if with_TensorBoard: writer.add_scalar("Accuracy/validation", 0, 0)
+
 
     iteration = 0
+    min_valid_loss = 100
+    stop_flag = 0
+    max_flags = 3
     for epoch in range(num_epochs):
         correct = 0
         total = 0
+        total_loss = 0
         data = enumerate(loaders)
+        cnn.train()
         for i, (images, labels) in data:
             b_img = Variable(images)   # batch images
             b_lbs = Variable(labels)   # batch labels
@@ -41,6 +49,7 @@ def train(num_epochs, cnn, loaders, test_loaders, batch_size, update_every_x_bat
 
             # Compute loss
             loss = loss_func(output, b_lbs)
+            total_loss += loss.item()
             if with_TensorBoard: writer.add_scalar("Loss/train", loss, iteration)
             iteration += 1
             
@@ -58,8 +67,51 @@ def train(num_epochs, cnn, loaders, test_loaders, batch_size, update_every_x_bat
                        .format(epoch + 1, num_epochs, i + 1, total_step, loss.item()))
                 pass
 
+
         accuracy = 100 * (correct / total)
+        avg_loss = total_loss / iteration
         if with_TensorBoard: writer.add_scalar("Accuracy/train", accuracy, epoch + 1)
-        print(f"\nEpoch {epoch+1}, Train Accuracy: {accuracy:0.2f}%\n ")
+        if with_TensorBoard: writer.add_scalar("AvgLoss/train", avg_loss, epoch + 1)
+        print(f"\nEpoch {epoch+1}, Train Average Loss: {avg_loss:0.4f}")
+        print(f"Epoch {epoch+1}, Train Accuracy: {accuracy:0.2f}%\n")
+
+        # Calculate the Validation Accuracy of the model
+        cnn.eval()
+        iteration = 0
+        correct = 0
+        total = 0
+        total_loss = 0
+        with torch.no_grad():
+            for i, (images, labels) in enumerate(valid_loader):
+                b_img = Variable(images)
+                b_lbs = Variable(labels)
+                output = cnn(b_img)[0]
+                _, predicted = output.max(1)
+                total += labels.size(0)
+                correct += predicted.eq(labels).sum().item()
+                loss = loss_func(output, b_lbs)
+                if with_TensorBoard: writer.add_scalar("Loss/validation", loss, iteration)
+                total_loss += loss.item()
+                iteration += 1
+        
+        accuracy = 100 * (correct / total)
+        avg_loss = total_loss / iteration
+        if with_TensorBoard: writer.add_scalar("Accuracy/validation", accuracy, epoch + 1)
+        if with_TensorBoard: writer.add_scalar("AvgLoss/validation", avg_loss, epoch + 1)
+        print(f"Epoch {epoch+1}, Validation Average Loss: {avg_loss:0.4f} ")
+        print(f"Epoch {epoch+1}, Validation Accuracy: {accuracy:0.2f}%\n")
+
+        if (avg_loss < min_valid_loss):
+            min_valid_loss = avg_loss
+            stop_flag = 0
+        elif ((((avg_loss - min_valid_loss) / min_valid_loss) * 100 < 10) & (stop_flag+1 == max_flags)):
+            print(f"Loss Failed to improve - Not greater than 10% - Give BOD\n")
+        else:
+            stop_flag += 1
+            print(f"Loss Failed to improve - Attempt: {stop_flag}/{max_flags}\n")
+            if stop_flag == max_flags:
+                print("\nEarly Stopping Criteria Met\n")
+                break
+
     
     if with_TensorBoard: writer.flush()

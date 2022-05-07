@@ -1,7 +1,7 @@
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 import torch
 import ssl
 
@@ -14,6 +14,7 @@ train_data = datasets.CIFAR10(
     transform = ToTensor(),
     download = False, ## If you do not have the data set stored locally at '/data' set to True
 )
+train, valid = random_split(train_data,[45000,5000])
 test_data = datasets.CIFAR10(
     root = 'data',
     train = False,
@@ -35,13 +36,7 @@ def visualizeDATA():
 
 def getLoaders(batch_size=100):
     return (
-    torch.utils.data.DataLoader(train_data,
-                                          batch_size=batch_size,
-                                          shuffle=True,
-                                          num_workers=1),
-    
-    torch.utils.data.DataLoader(test_data,
-                                          batch_size=batch_size,
-                                          shuffle=True,
-                                          num_workers=1),
+    torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True, num_workers=1),
+    torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True, num_workers=1),
+    torch.utils.data.DataLoader(valid, batch_size=batch_size, shuffle=False, num_workers=1),
     )

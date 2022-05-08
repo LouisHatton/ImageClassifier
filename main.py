@@ -12,6 +12,7 @@ from test import *
 
 # # # --- Configuration --- # # #
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+torch.cuda.set_device(0)
 BATCH_SIZE = 300
 UPDATE_EVERY_X_BATCHES = 50
 MODEL_NAME = "CIFAR10_TEST"
@@ -73,7 +74,7 @@ def test_trained_model(model, test_loader, path, run_accuracy):
 
 if (__name__ == "__main__"):    
     # Get the train and test data loaders
-    print("\nLoading the dataset... \n")
+    print("\nLoading the dataset... \nUsing "+device)
     train_loader, test_loader, validation_loader = getLoaders(batch_size=BATCH_SIZE)
 
     # Get the model

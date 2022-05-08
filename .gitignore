@@ -1,5 +1,6 @@
 # Pytorch Data Store
 data/
+trained_models/
 # TensorBoard Run Store
 runs/
 

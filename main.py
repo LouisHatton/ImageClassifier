@@ -1,6 +1,9 @@
 import torch
 import time
 import random
+from networks.FasterNet import FasterNet
+from networks.FourLayerConv import FourLayerConv
+from networks.ResidualNetwork import ResidualNetwork
 from networks.ThreeLayerConv import ThreeLayerConv
 from plotter import *
 from utils import *
@@ -10,8 +13,8 @@ from test import *
 
 # # # --- Configuration --- # # #
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-BATCH_SIZE = 100 
-UPDATE_EVERY_X_BATCHES = 100
+BATCH_SIZE = 300
+UPDATE_EVERY_X_BATCHES = 50
 MODEL_NAME = "CIFAR10_TEST"
 
 
@@ -75,7 +78,7 @@ if (__name__ == "__main__"):
     train_loader, test_loader, validation_loader = getLoaders(batch_size=BATCH_SIZE)
 
     # Get the model
-    model = ThreeLayerConv()
+    model = ResidualNetwork()
     
     # Uncomment out the following line to train the model
 

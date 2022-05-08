@@ -8,7 +8,7 @@ import torch.nn as nn
 
 def train(num_epochs, cnn, loaders, valid_loader, batch_size, update_every_x_batches, with_TensorBoard=False):
     
-    optimizer = optim.Adam(cnn.parameters(), lr = 0.01)   
+    optimizer = optim.Adam(cnn.parameters(), lr = 0.002)   
     loss_func = nn.CrossEntropyLoss()
 
     cnn.train() # set model to training mode
@@ -104,6 +104,9 @@ def train(num_epochs, cnn, loaders, valid_loader, batch_size, update_every_x_bat
         if (avg_loss < min_valid_loss):
             min_valid_loss = avg_loss
             stop_flag = 0
+            print("Loss Improved - saving temp file...\n")
+            PATH = './cifar_model_temp_save'
+            torch.save(cnn.state_dict(), PATH)
         elif ((((avg_loss - min_valid_loss) / min_valid_loss) * 100 < 10) & (stop_flag+1 == max_flags)):
             print(f"Loss Failed to improve - Not greater than 10% - Give BOD\n")
         else:

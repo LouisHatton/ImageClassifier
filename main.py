@@ -2,7 +2,6 @@ import torch
 import time
 import random
 from networks.FasterNet import FasterNet
-from networks.FourLayerConv import FourLayerConv
 from networks.ResidualNetwork import ResidualNetwork
 from networks.ThreeLayerConv import ThreeLayerConv
 from plotter import *

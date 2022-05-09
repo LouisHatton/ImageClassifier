@@ -12,8 +12,8 @@ from test import *
 
 # # # --- Configuration --- # # #
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-torch.cuda.set_device(0)
-BATCH_SIZE = 300
+# torch.cuda.set_device(0)
+BATCH_SIZE = 100
 UPDATE_EVERY_X_BATCHES = 50
 MODEL_NAME = "CIFAR10_TEST"
 
@@ -80,6 +80,7 @@ if (__name__ == "__main__"):
 
     # Get the model
     model = ResidualNetwork()
+   # model.cuda()
     
     # Uncomment out the following line to train the model
 

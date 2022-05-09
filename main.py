@@ -74,7 +74,8 @@ def test_trained_model(model, test_loader, path, run_accuracy):
 
 if (__name__ == "__main__"):    
     # Get the train and test data loaders
-    print("\nLoading the dataset... \nUsing "+device)
+    print("\nLoading the dataset... \nUsing ")
+    print(device)
     train_loader, test_loader, validation_loader = getLoaders(batch_size=BATCH_SIZE)
 
     # Get the model

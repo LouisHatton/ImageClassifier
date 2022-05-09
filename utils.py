@@ -12,7 +12,7 @@ train_data = datasets.CIFAR10(
     root = 'data',
     train = True,
     transform = ToTensor(),
-    download = True, ## If you do not have the data set stored locally at '/data' set to True
+    download = False, ## If you do not have the data set stored locally at '/data' set to True
 )
 train, valid = random_split(train_data,[45000,5000])
 test_data = datasets.CIFAR10(

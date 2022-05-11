@@ -1,0 +1,17 @@
+Batch Size: 32
+optimizer = optim.Adam(cnn.parameters(), lr = 0.002)   
+loss_func = nn.CrossEntropyLoss()
+scheduler = ReduceLROnPlateau(optimizer=optimizer, mode='min', patience=0, verbose=True)
+
+- Scheduler reduces learning rate if the Validation Loss increases.
+  Check terminal logs to see when this occoured.
+
+- PyTorch API: https://pytorch.org/docs/stable/generated/torch.optim.lr_scheduler.ReduceLROnPlateau.html
+
+
+The final model is from the end of Epoch 14
+
+- If you check the terminal logs, this is the last time it temp saved due to the accuracy increasing ("Accuracy Improved - saving temp accuracy file...")
+
+
+The terminal logs show at which epoch the learning rate was reduced ("reducing learning rate of group 0 to")

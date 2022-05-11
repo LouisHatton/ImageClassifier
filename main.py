@@ -12,18 +12,18 @@ from test import *
 
 # # # --- Configuration --- # # #
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-BATCH_SIZE = 300
-UPDATE_EVERY_X_BATCHES = 50
+BATCH_SIZE = 100
+UPDATE_EVERY_X_BATCHES = 300
 MODEL_NAME = "CIFAR10_TEST"
 
 
 def saveModel(model, path):
     torch.save(model.state_dict(), path)
-    print("Model saved as: ", path.split("./trained_models/")[1])
+    print("Model saved to: ", path)
 
 def loadModel(model, path):
     model.load_state_dict(torch.load(path))
-    print("Model loaded from: ", path.split("./trained_models/")[1])
+    print("Model loaded from: ", path)
 
 def train_model(model, train_loader, valid_loader, test_loader, num_epochs, with_TensorBoard):
     tic = time.perf_counter()
@@ -78,24 +78,25 @@ if (__name__ == "__main__"):
 
     # Get the model
     model = ResidualNetwork()
+    model.to(device)
     
     # Uncomment out the following line to train the model
 
-    train_model(
-            model=model,
-            train_loader=train_loader,
-            valid_loader=validation_loader, 
-            test_loader=test_loader,
-            num_epochs=30,
-            with_TensorBoard=True
-    )
+    # train_model(
+    #         model=model,
+    #         train_loader=train_loader,
+    #         valid_loader=validation_loader, 
+    #         test_loader=test_loader,
+    #         num_epochs=30,
+    #         with_TensorBoard=True
+    # )
 
     # Uncomment out the following line to test the model
 
-    # trained_model_path = "./trained_models/CIFAR10_TEST_759_5090.pth"
-    # test_trained_model(
-    #                 model=model, 
-    #                 test_loader=test_loader, 
-    #                 path=trained_model_path, 
-    #                 run_accuracy=False
-    # )
+    trained_model_path = "./CIFAR10_temp_accuracy_save.pth"
+    test_trained_model(
+                    model=model, 
+                    test_loader=test_loader, 
+                    path=trained_model_path, 
+                    run_accuracy=True
+    )
